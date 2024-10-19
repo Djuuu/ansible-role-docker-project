@@ -1,0 +1,10 @@
+---
+
+# Base directory for Docker projects
+docker_projects_path: /var/apps
+
+# Local machine domain
+local_base_domain: localhost
+
+# Exposed service domain
+exposed_base_domain: example.net

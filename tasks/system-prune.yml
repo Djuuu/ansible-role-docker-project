@@ -1,0 +1,12 @@
+---
+
+- name: "Prune docker containers, networks & images"
+  ansible.builtin.command: "{{ docker_cli }} system prune --all --force"
+  register: docker_system_prune_result
+  ignore_errors: true
+  changed_when: docker_system_prune_result.stdout_lines | length > 1
+
+- name: "Show prune result"
+  ansible.builtin.debug:
+    msg: "{{ docker_system_prune_result.stdout_lines }}"
+  changed_when: docker_system_prune_result.changed

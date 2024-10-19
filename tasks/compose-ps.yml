@@ -1,0 +1,16 @@
+---
+
+- name: "Get project status: {{ project_name }}"
+  ansible.builtin.command: "{{ docker_cli }} compose ps"
+  args:
+    chdir: "{{ project_path }}"
+  register: docker_compose_ps_result
+  changed_when: false
+  ignore_errors: true
+
+- name: "Show project status: {{ project_name }}"
+  ansible.builtin.debug:
+    msg: "{{ (docker_compose_ps_result.stdout_lines | length > 1) | ternary(
+        docker_compose_ps_result.stdout_lines,
+        'offline'
+      ) }}"

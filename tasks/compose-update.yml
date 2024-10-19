@@ -1,0 +1,10 @@
+---
+
+- name: "Update project (community): {{ project_name }}"
+  ansible.builtin.include_tasks: _compose-update-community.yml
+  when: not docker_use_custom | default(false)
+
+
+- name: "Update project (custom): {{ project_name }}"
+  ansible.builtin.include_tasks: _compose-update-custom.yml
+  when: docker_use_custom | default(false)

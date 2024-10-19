@@ -1,0 +1,30 @@
+---
+
+- name: "Update project images: {{ project_name }}"
+  community.docker.docker_compose_v2_pull:
+    project_src: "{{ project_path }}"
+  register: output
+  when: not project_restart
+
+
+- name: "Update project services: {{ project_name }}"
+  when: project_restart
+  block:
+
+    - name: "Update project services: {{ project_name }}"
+      community.docker.docker_compose_v2:
+        docker_cli:     "{{ docker_cli }}"
+        project_src:    "{{ project_path }}"
+        pull:           always
+        state:          present
+        remove_orphans: true
+        wait:           "{{ project_restart }}"
+      register: output
+
+    - name: "Show project update status: {{ project_name }}"
+      ansible.builtin.debug:
+        msg: "{{ output.stderr_lines | default([]) }}"
+      changed_when: output.changed
+
+    - name: "Show status: {{ project_name }}"
+      ansible.builtin.include_tasks: compose-ps.yml

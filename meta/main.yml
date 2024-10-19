@@ -1,0 +1,27 @@
+---
+dependencies: []
+
+galaxy_info:
+  namespace: djuuu
+  role_name: docker_tasks
+  author: Julien Tardot
+  description: Common docker tasks
+
+  issue_tracker_url: https://github.com/Djuuu/ansible-role-docker-tasks
+
+  license: Beerware
+
+  min_ansible_version: '2.9'
+
+  platforms:
+    - name: Debian
+      versions:
+        - all
+    - name: Ubuntu
+      versions:
+        - all
+
+  galaxy_tags:
+    - ansible
+    - docker
+    - compose

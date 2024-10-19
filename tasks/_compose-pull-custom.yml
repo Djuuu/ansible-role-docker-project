@@ -1,0 +1,21 @@
+---
+
+- name: "Pull project: {{ project_name }}"
+  vars:
+    pull_match_lines: '.* (Pulling|Pulled|No image to be pulled)\s*$'
+  block:
+
+    - name: "Pull project images: {{ project_name }}"
+      ansible.builtin.command: "{{ docker_cli }} compose pull"
+      args:
+        chdir: "{{ project_path }}"
+      register: docker_compose_pull_result
+      changed_when: |
+        (docker_compose_pull_result.stderr_lines | length) >
+        (docker_compose_pull_result.stderr_lines | select('match', pull_match_lines) | length)
+      ignore_errors: true
+
+    - name: "Show project pull result: {{ project_name }}"
+      ansible.builtin.debug:
+        msg: "{{ docker_compose_pull_result.stderr_lines | select('match', pull_match_lines) }}"
+      changed_when: docker_compose_pull_result.changed

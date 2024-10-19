@@ -1,0 +1,15 @@
+---
+
+- name: "Update project images: {{ project_name }}"
+  ansible.builtin.include_tasks: _compose-pull-custom.yml
+
+
+- name: "Update project services: {{ project_name }}"
+  when: project_restart
+  block:
+
+    - name: "Update project services: {{ project_name }}"
+      ansible.builtin.include_tasks: _compose-up-custom.yml
+
+    - name: "Show project status: {{ project_name }}"
+      ansible.builtin.include_tasks: compose-ps.yml
