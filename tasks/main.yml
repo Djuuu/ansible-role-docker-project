@@ -1,0 +1,17 @@
+---
+
+## Check
+
+- name: Check variables
+  ansible.builtin.assert:
+    that:
+      - docker_projects_path is defined
+  tags: ["init", "check"]
+
+- name: Check directories
+  ansible.builtin.stat: { path: "{{ item }}" }
+  register: _dir
+  failed_when: not _dir.stat.exists or not _dir.stat.writeable or not (_dir.stat.isdir or _dir.stat.islnk)
+  loop:
+    - "{{ docker_projects_path }}"
+  tags: ["init", "check"]
