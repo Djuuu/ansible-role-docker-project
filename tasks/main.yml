@@ -15,3 +15,9 @@
   loop:
     - "{{ docker_projects_path }}"
   tags: ["init", "check"]
+
+## Init
+
+- name: Init Docker Compose project vars
+  ansible.builtin.include_role: { name: djuuu.docker_tasks, tasks_from: init-compose-project-vars }
+  tags: ["init"]
