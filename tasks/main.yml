@@ -2,22 +2,20 @@
 
 ## Check
 
-- name: Check variables
+- name: Check base variables
   ansible.builtin.assert:
     that:
-      - docker_projects_path is defined
+      - docker_project_name is defined and docker_project_name
+      - docker_projects_path is defined and docker_projects_path
   tags: ["init", "check"]
 
-- name: Check directories
-  ansible.builtin.stat: { path: "{{ item }}" }
+- name: "Check base directory is writeable: {{ docker_projects_path }}"
+  ansible.builtin.stat: { path: "{{ docker_projects_path }}" }
   register: _dir
   failed_when: not _dir.stat.exists or not _dir.stat.writeable or not (_dir.stat.isdir or _dir.stat.islnk)
-  loop:
-    - "{{ docker_projects_path }}"
   tags: ["init", "check"]
 
 ## Init
 
-- name: Init Docker Compose project vars
-  ansible.builtin.include_role: { name: djuuu.docker_tasks, tasks_from: init-compose-project-vars }
-  tags: ["init"]
+- name: Init Traefik Docker Compose project vars
+  ansible.builtin.include_tasks: _init-vars.yml

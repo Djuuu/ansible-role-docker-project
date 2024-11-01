@@ -1,10 +1,17 @@
 ---
 
+# Project name
+docker_project_name: # example-project
+
 # Base directory for Docker projects
-docker_projects_path: /var/apps
+docker_projects_path: # /var/apps
 
 # Local machine domain
 local_base_domain: localhost
 
 # Exposed service domain
-exposed_base_domain: example.net
+exposed_base_domain: # example.net
+
+# Additional allowed origins
+docker_project_allowed_origins: []
+#  - https://dashboard.example.net

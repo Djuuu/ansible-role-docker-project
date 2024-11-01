@@ -1,0 +1,47 @@
+---
+
+# Project slug for technical usage
+docker_project_slug: "{{ docker_project_name | regex_replace('[^\\w]', '-') }}"
+
+# Dynamic vars prefix for current project
+docker_project_prefix: "{{ docker_project_name | regex_replace('[^\\w]', '_') }}"
+
+# Project directory path
+docker_project_path: "{{ docker_projects_path }}/{{ docker_project_slug }}"
+
+
+## Docker project dynamic vars
+
+# Should Traefik expose service?
+docker_project_traefik_enable: "{{ lookup('vars', docker_project_prefix ~ '_traefik_enable', default=false) }}"
+
+# Domain used to expose service
+docker_project_traefik_domain: "{{ lookup('vars', docker_project_prefix ~ '_traefik_domain', default='') }}"
+# Subdomain used to expose service (concatenated with local_base_domain / exposed_base_domain)
+docker_project_traefik_subdomain: "{{ lookup('vars', docker_project_prefix ~ '_traefik_subdomain', default='') }}"
+
+# Service name targeted by Traefik router
+docker_project_traefik_router_service: "{{ lookup('vars', docker_project_prefix ~ '_traefik_router_service', default='') }}"
+# Port targeted by Traefik router
+docker_project_traefik_loadbalancer_server_port: "{{ lookup('vars', docker_project_prefix ~ '_traefik_loadbalancer_server_port', default='') }}"
+# Traefik router entrypoints
+docker_project_traefik_entrypoints: "{{ lookup('vars', docker_project_prefix ~ '_traefik_entrypoints', default='') | default('https', true) }}"
+# Traefik router middlewares
+docker_project_traefik_middlewares: "{{ lookup('vars', docker_project_prefix ~ '_traefik_middlewares', default=[]) }}"
+
+# CORS settings when "{{ docker_project_slug }}-cors@docker" middleware is enabled
+docker_project_access_control_max_age:       "{{ lookup('vars', docker_project_prefix ~ '_access_control_max_age',       default=100) }}"
+docker_project_access_control_allow_methods: "{{ lookup('vars', docker_project_prefix ~ '_access_control_allow_methods', default='*') }}"
+docker_project_access_control_allow_headers: "{{ lookup('vars', docker_project_prefix ~ '_access_control_allow_headers', default='*') }}"
+
+# Additional Traefik labels
+docker_project_traefik_custom_labels: "{{ lookup('vars', docker_project_prefix ~ '_traefik_custom_labels', default='') }}"
+
+# Optional default network IP subnets
+docker_project_compose_ipv4_subnet: "{{ lookup('vars', docker_project_prefix ~ '_compose_ipv4_subnet', default='') }}"
+docker_project_compose_ipv6_subnet: "{{ lookup('vars', docker_project_prefix ~ '_compose_ipv6_subnet', default='') }}"
+
+# Top-level additional docker-compose options
+docker_project_compose_additional_options: "{{ lookup('vars', docker_project_prefix ~ '_compose_additional_options', default='') }}"
+# Main service additional docker-compose options (ex: cpu_shares, deploy, ...)
+docker_project_compose_service_additional_options: "{{ lookup('vars', docker_project_prefix ~ '_compose_service_additional_options', default='') }}"

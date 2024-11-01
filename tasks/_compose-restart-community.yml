@@ -1,14 +1,14 @@
 ---
 
-- name: "Restart project containers: {{ project_name }}"
+- name: "Restart project containers: {{ docker_project_name }}"
   community.docker.docker_compose_v2:
     docker_cli:  "{{ docker_cli }}"
-    project_src: "{{ project_path }}"
+    project_src: "{{ docker_project_path }}"
     state:       restarted
     wait:        true
   register: restart_result
 
-- name: "Show project restart result: {{ project_name }}"
+- name: "Show project restart result: {{ docker_project_name }}"
   ansible.builtin.debug:
     msg: "{{ restart_result.stderr_lines | default([]) }}"
   changed_when: restart_result.changed

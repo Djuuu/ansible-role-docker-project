@@ -1,10 +1,10 @@
 ---
 
-- name: "Start project (community): {{ project_name }}"
+- name: "Start project (community): {{ docker_project_name }}"
   ansible.builtin.include_tasks: _compose-up-community.yml
   when: not docker_use_custom | default(false)
 
 
-- name: "Start project (custom): {{ project_name }}"
+- name: "Start project (custom): {{ docker_project_name }}"
   ansible.builtin.include_tasks: _compose-up-custom.yml
   when: docker_use_custom | default(false)

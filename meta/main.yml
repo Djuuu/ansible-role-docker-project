@@ -3,11 +3,11 @@ dependencies: []
 
 galaxy_info:
   namespace: djuuu
-  role_name: docker_tasks
+  role_name: docker_project
   author: Julien Tardot
-  description: Common docker tasks
+  description: Base role for Docker Compose projects.
 
-  issue_tracker_url: https://github.com/Djuuu/ansible-role-docker-tasks
+  issue_tracker_url: https://github.com/Djuuu/ansible-role-docker-project
 
   license: Beerware
 
