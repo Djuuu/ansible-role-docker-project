@@ -1,10 +1,15 @@
 ---
 
+- name: "Check docker compose version"
+  ansible.builtin.include_tasks: _get_compose_version.yml
+  when: can_use_community_docker_collection is not defined
+
+
 - name: "Update project (community): {{ docker_project_name }}"
   ansible.builtin.include_tasks: _compose-update-community.yml
-  when: not docker_use_custom | default(false)
+  when: can_use_community_docker_collection | default(true)
 
 
 - name: "Update project (custom): {{ docker_project_name }}"
   ansible.builtin.include_tasks: _compose-update-custom.yml
-  when: docker_use_custom | default(false)
+  when: not can_use_community_docker_collection | default(true)

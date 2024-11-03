@@ -1,0 +1,10 @@
+---
+
+- name: "Get docker compose version"
+  ansible.builtin.command: "{{ docker_cli }} compose version --short"
+  register: _version
+  changed_when: false
+
+- name: "Check if community.docker collection can be used"
+  ansible.builtin.set_fact:
+    can_use_community_docker_collection: "{{ _version.stdout is version('2.18.0', '>=') }}"
