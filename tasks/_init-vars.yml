@@ -159,7 +159,3 @@
       - "{{ docker_project_compose_additional_options.split('\n') | reject('eq', '') }}"
       - "docker_project_compose_service_additional_options ({{ docker_project_prefix }}_compose_service_additional_options):"
       - "{{ docker_project_compose_service_additional_options.split('\n') | reject('eq', '') }}"
-
-
-#- ansible.builtin.fail:
-#    msg: "🚧 TMP DEBUG 🚧"
