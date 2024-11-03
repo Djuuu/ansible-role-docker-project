@@ -3,6 +3,12 @@ Docker-project
 
 Base role for Docker Compose projects.
 
+Requirements
+------------
+
+- Docker CLI with Docker compose plugin 2.18.0 or later
+- Ansible >=2.11.0
+
 Role Variables
 --------------
 

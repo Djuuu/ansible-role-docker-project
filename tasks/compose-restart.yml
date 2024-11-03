@@ -1,15 +1,14 @@
 ---
 
-- name: "Check docker compose version"
-  ansible.builtin.include_tasks: _get_compose_version.yml
-  when: can_use_community_docker_collection is not defined
+- name: "Restart project containers: {{ docker_project_name }}"
+  community.docker.docker_compose_v2:
+    docker_cli:  "{{ docker_cli }}"
+    project_src: "{{ docker_project_path }}"
+    state:       restarted
+    wait:        true
+  register: restart_result
 
-
-- name: "Restart project (community): {{ docker_project_name }}"
-  ansible.builtin.include_tasks: _compose-restart-community.yml
-  when: can_use_community_docker_collection | default(true)
-
-
-- name: "Restart project (custom): {{ docker_project_name }}"
-  ansible.builtin.include_tasks: _compose-restart-custom.yml
-  when: not can_use_community_docker_collection | default(true)
+- name: "Show project restart result: {{ docker_project_name }}"
+  ansible.builtin.debug:
+    msg: "{{ restart_result.stderr_lines | default([]) }}"
+  changed_when: restart_result.changed

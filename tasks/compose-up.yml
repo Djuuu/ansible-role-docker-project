@@ -1,15 +1,15 @@
 ---
 
-- name: "Check docker compose version"
-  ansible.builtin.include_tasks: _get_compose_version.yml
-  when: can_use_community_docker_collection is not defined
+- name: "Start project containers: {{ docker_project_name }}"
+  community.docker.docker_compose_v2:
+    docker_cli:     "{{ docker_cli }}"
+    project_src:    "{{ docker_project_path }}"
+    state:          present
+    remove_orphans: true
+    wait:           true
+  register: up_result
 
-
-- name: "Start project (community): {{ docker_project_name }}"
-  ansible.builtin.include_tasks: _compose-up-community.yml
-  when: can_use_community_docker_collection | default(true)
-
-
-- name: "Start project (custom): {{ docker_project_name }}"
-  ansible.builtin.include_tasks: _compose-up-custom.yml
-  when: not can_use_community_docker_collection | default(true)
+- name: "Show project start result: {{ docker_project_name }}"
+  ansible.builtin.debug:
+    msg: "{{ up_result.stderr_lines | default([]) }}"
+  changed_when: up_result.changed
