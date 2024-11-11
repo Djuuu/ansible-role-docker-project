@@ -2,7 +2,7 @@
 
 - name: "Restart project containers: {{ docker_project_name }}"
   community.docker.docker_compose_v2:
-    docker_cli:  "{{ docker_cli }}"
+    docker_cli:  "{{ docker_cli | default(omit, true) }}"
     project_src: "{{ docker_project_path }}"
     state:       restarted
     wait:        true

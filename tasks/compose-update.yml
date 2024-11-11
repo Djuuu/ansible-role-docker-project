@@ -2,6 +2,7 @@
 
 - name: "Update project images: {{ docker_project_name }}"
   community.docker.docker_compose_v2_pull:
+    docker_cli:  "{{ docker_cli | default(omit, true) }}"
     project_src: "{{ docker_project_path }}"
   register: output
   when: not project_restart
@@ -12,7 +13,7 @@
 
     - name: "Update project services: {{ docker_project_name }}"
       community.docker.docker_compose_v2:
-        docker_cli:     "{{ docker_cli }}"
+        docker_cli:     "{{ docker_cli | default(omit, true) }}"
         project_src:    "{{ docker_project_path }}"
         pull:           always
         state:          present

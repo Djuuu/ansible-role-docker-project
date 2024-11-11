@@ -1,7 +1,7 @@
 ---
 
 - name: "Get project status: {{ docker_project_name }}"
-  ansible.builtin.command: "{{ docker_cli }} compose ps"
+  ansible.builtin.command: "{{ docker_cli | default('docker', true) }} compose ps"
   args:
     chdir: "{{ docker_project_path }}"
   register: docker_compose_ps_result

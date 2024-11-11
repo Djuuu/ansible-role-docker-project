@@ -165,7 +165,15 @@ These variables are computed from other variables and can be used in roles:
         - subnet: 2001:db8:0001:0001::/64  
     enable_ipv6: true  
   ```  
-  
+
+### Other variables
+
+```yaml
+# Path to the Docker CLI (Community.Docker modules argument)
+# https://docs.ansible.com/ansible/latest/collections/community/docker/index.html
+docker_cli:
+```
+
 Example role implementation
 ---------------------------
 
@@ -205,7 +213,7 @@ Role example:
       src: docker-compose.yml.j2
       dest: "{{ docker_project_path }}/docker-compose.yml"
       mode: '0644'
-      validate: "{{ docker_cli }} compose -f %s config"
+      validate: "{{ docker_cli | default('docker', true) }} compose -f %s config"
       backup: true
   
   ## Run
