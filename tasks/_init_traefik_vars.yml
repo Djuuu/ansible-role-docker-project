@@ -1,0 +1,64 @@
+---
+
+- name: "Setup Traefik custom domain: {{ docker_project_prefix ~ '_traefik_domain: ' ~ docker_project_traefik_domain }}"
+  when:
+    - docker_project_traefik_domain
+  ansible.builtin.set_fact:
+    traefik_domains: "{{ [docker_project_traefik_domain] }}"
+    traefik_domain_label: "traefik.http.routers.{{ docker_project_slug }}.rule: Host(`{{ docker_project_traefik_domain }}`)"
+
+- name: "Setup Traefik custom subdomain: {{ docker_project_prefix ~ '_traefik_subdomain: ' ~ docker_project_traefik_subdomain }}"
+  when:
+    - not docker_project_traefik_domain
+    - traefik_subdomain_label_key is defined
+    - docker_project_traefik_subdomain
+  ansible.builtin.set_fact:
+    traefik_subdomain_label: "{{ traefik_subdomain_label_key }}: {{ docker_project_traefik_subdomain }}"
+
+- name: Setup Traefik default domains
+  when: not traefik_domains
+  vars:
+    _subdomain: "{{ docker_project_traefik_subdomain | default(docker_project_slug, true) }}"
+  ansible.builtin.set_fact:
+    traefik_domains: "{{ [
+        _subdomain ~ '.' ~ exposed_base_domain | default('', true),
+        _subdomain ~ '.' ~ local_base_domain   | default('', true),
+      ] | reject('eq', _subdomain ~ '.') }}"
+
+- name: Setup Traefik base labels
+  vars:
+    _allowed_origins: "{{
+      (traefik_domains | map('regex_replace', '^(.*)$', 'https://\\1'))
+      + (docker_project_allowed_origins | default([]))
+    }}"
+    _traefik_project_base_labels: |-
+      #jinja2: trim_blocks: True, lstrip_blocks: True
+      traefik.enable: {{  docker_project_traefik_enable | ternary('true', 'false') }}
+      {{ traefik_domain_label }}
+      {{ traefik_subdomain_label }}
+      {{ docker_project_traefik_custom_labels }}
+
+      {% if docker_project_traefik_loadbalancer_server_port %}
+      traefik.http.services.{{ docker_project_slug }}.loadbalancer.server.port: {{ docker_project_traefik_loadbalancer_server_port }}
+      {% endif %}
+      {% if docker_project_traefik_router_service %}
+      traefik.http.routers.{{ docker_project_slug }}.service: {{ docker_project_traefik_router_service }}
+      {% endif %}
+      traefik.http.routers.{{ docker_project_slug }}.entrypoints: {{ docker_project_traefik_entrypoints }}
+
+      {% if docker_project_traefik_middlewares | length > 0 %}
+      traefik.http.routers.{{ docker_project_slug }}.middlewares: >-
+        {{ docker_project_traefik_middlewares | join(', ') }}
+      {% endif %}
+
+      {% if docker_project_slug ~ '-cors@docker' in docker_project_traefik_middlewares %}
+      traefik.http.middlewares.{{ docker_project_slug }}-cors.headers.accessControlMaxAge: {{ docker_project_access_control_max_age | default(100) }}
+      traefik.http.middlewares.{{ docker_project_slug }}-cors.headers.addVaryHeader: true
+      traefik.http.middlewares.{{ docker_project_slug }}-cors.headers.accessControlAllowMethods: "{{ docker_project_access_control_allow_methods | default('*') }}"
+      traefik.http.middlewares.{{ docker_project_slug }}-cors.headers.accessControlAllowHeaders: "{{ docker_project_access_control_allow_headers | default('*') }}"
+      traefik.http.middlewares.{{ docker_project_slug }}-cors.headers.accesscontrolalloworiginlist: >-
+        {{ _allowed_origins | join(', ') }}
+      {% endif %}
+  ansible.builtin.set_fact:
+    traefik_project_base_host_rules: "(Host(`{{ traefik_domains | join('`) || Host(`') }}`))"
+    traefik_project_base_labels:     "{{ _traefik_project_base_labels | regex_replace('\n\n\n(\n)*', '\n\n', multiline=True) }}"

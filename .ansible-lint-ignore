@@ -1,1 +1,2 @@
 tasks/_init-vars.yml yaml[line-length]
+tasks/_init_traefik_vars.yml yaml[line-length]
