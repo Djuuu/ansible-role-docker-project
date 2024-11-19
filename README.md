@@ -92,6 +92,12 @@ Variables constructed from `docker_project_name` value can be used to configure:
   - _`{{ docker_project_prefix }}`_**`_traefik_middlewares`**  
     Traefik router middlewares  
 
+  - _`{{ docker_project_prefix }}`_**`_traefik_define_internal_route`** (default: `false`)  
+    Should an internal route be defined (restricted to `traefik_internal_networks`)
+
+  - _`{{ docker_project_prefix }}`_**`_traefik_middlewares_internal`**  
+    Traefik router middlewares applied on internal route
+
   - _`{{ docker_project_prefix }}`_**`_access_control_max_age`** (default: `100`)  
   - _`{{ docker_project_prefix }}`_**`_access_control_allow_methods`** (default: `"*"`)  
   - _`{{ docker_project_prefix }}`_**`_access_control_allow_headers`** (default: `"*"`)  

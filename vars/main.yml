@@ -29,6 +29,11 @@ docker_project_traefik_entrypoints: "{{ lookup('vars', docker_project_prefix ~ '
 # Traefik router middlewares
 docker_project_traefik_middlewares: "{{ lookup('vars', docker_project_prefix ~ '_traefik_middlewares', default=[]) }}"
 
+# Should an internal route be defined (restricted to `traefik_internal_networks`)
+docker_project_traefik_define_internal_route: "{{ lookup('vars', docker_project_prefix ~ '_traefik_define_internal_route', default=false) }}"
+# Traefik router middlewares applied on internal route
+docker_project_traefik_middlewares_internal: "{{ lookup('vars', docker_project_prefix ~ '_traefik_middlewares_internal', default=[]) }}"
+
 # CORS settings when "{{ docker_project_slug }}-cors@docker" middleware is enabled
 docker_project_access_control_max_age:       "{{ lookup('vars', docker_project_prefix ~ '_access_control_max_age',       default=100) }}"
 docker_project_access_control_allow_methods: "{{ lookup('vars', docker_project_prefix ~ '_access_control_allow_methods', default='*') }}"

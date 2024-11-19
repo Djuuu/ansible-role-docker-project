@@ -25,33 +25,69 @@
         _subdomain ~ '.' ~ local_base_domain   | default('', true),
       ] | reject('eq', _subdomain ~ '.') }}"
 
+- name: Setup Traefik base host rules
+  ansible.builtin.set_fact:
+    traefik_project_base_host_rules: "(Host(`{{ traefik_domains | join('`) || Host(`') }}`))"
+
 - name: Setup Traefik base labels
   vars:
     _allowed_origins: "{{
       (traefik_domains | map('regex_replace', '^(.*)$', 'https://\\1'))
       + (docker_project_allowed_origins | default([]))
     }}"
+
+    _traefik_main_router:     "traefik.http.routers.{{ docker_project_slug }}"
+    _traefik_internal_router: "traefik.http.routers.{{ docker_project_slug }}-internal"
+
+    _traefik_main_router_labels: |-
+      #jinja2: trim_blocks: True, lstrip_blocks: True
+      {{ _traefik_main_router }}.entrypoints: {{ docker_project_traefik_entrypoints }}
+      {{ traefik_domain_label }}
+      {% if docker_project_traefik_router_service %}
+      {{ _traefik_main_router }}.service: {{ docker_project_traefik_router_service }}
+      {% endif %}
+      {% if docker_project_traefik_middlewares | length > 0 %}
+      {{ _traefik_main_router }}.middlewares: >-
+        {{ docker_project_traefik_middlewares | join(', ') }}
+      {% endif %}
+    _traefik_internal_router_labels: |-
+      #jinja2: trim_blocks: True, lstrip_blocks: True
+      {{ _traefik_internal_router }}.entrypoints: {{ docker_project_traefik_entrypoints }}
+      {{ _traefik_internal_router }}.rule: {{ traefik_project_base_host_rules }} && (
+            ClientIP(`127.0.0.1`)
+        {% for item in traefik_internal_networks %}
+         || ClientIP(`{{ item.net | default(item) }}`)
+        {% endfor %}
+        )
+      {% if docker_project_traefik_router_service %}
+      {{ _traefik_internal_router }}.service: {{ docker_project_traefik_router_service }}
+      {% endif %}
+      {% if docker_project_traefik_middlewares_internal | length > 0 %}
+      {{ _traefik_internal_router }}.middlewares: >-
+        {{ docker_project_traefik_middlewares_internal | join(', ') }}
+      {% endif %}
+
     _traefik_project_base_labels: |-
       #jinja2: trim_blocks: True, lstrip_blocks: True
       traefik.enable: {{  docker_project_traefik_enable | ternary('true', 'false') }}
-      {{ traefik_domain_label }}
-      {{ traefik_subdomain_label }}
-      {{ docker_project_traefik_custom_labels }}
-
       {% if docker_project_traefik_loadbalancer_server_port %}
       traefik.http.services.{{ docker_project_slug }}.loadbalancer.server.port: {{ docker_project_traefik_loadbalancer_server_port }}
       {% endif %}
-      {% if docker_project_traefik_router_service %}
-      traefik.http.routers.{{ docker_project_slug }}.service: {{ docker_project_traefik_router_service }}
-      {% endif %}
-      traefik.http.routers.{{ docker_project_slug }}.entrypoints: {{ docker_project_traefik_entrypoints }}
-
-      {% if docker_project_traefik_middlewares | length > 0 %}
-      traefik.http.routers.{{ docker_project_slug }}.middlewares: >-
-        {{ docker_project_traefik_middlewares | join(', ') }}
+      {% if traefik_subdomain_label %}
+      {{ traefik_subdomain_label }}
       {% endif %}
 
+      {{ _traefik_main_router_labels }}
+      {% if docker_project_traefik_define_internal_route %}
+
+      {{ _traefik_internal_router_labels }}
+      {% endif %}
+      {% if docker_project_traefik_custom_labels %}
+      
+      {{ docker_project_traefik_custom_labels }}
+      {% endif %}
       {% if docker_project_slug ~ '-cors@docker' in docker_project_traefik_middlewares %}
+      
       traefik.http.middlewares.{{ docker_project_slug }}-cors.headers.accessControlMaxAge: {{ docker_project_access_control_max_age | default(100) }}
       traefik.http.middlewares.{{ docker_project_slug }}-cors.headers.addVaryHeader: true
       traefik.http.middlewares.{{ docker_project_slug }}-cors.headers.accessControlAllowMethods: "{{ docker_project_access_control_allow_methods | default('*') }}"
@@ -60,5 +96,4 @@
         {{ _allowed_origins | join(', ') }}
       {% endif %}
   ansible.builtin.set_fact:
-    traefik_project_base_host_rules: "(Host(`{{ traefik_domains | join('`) || Host(`') }}`))"
-    traefik_project_base_labels:     "{{ _traefik_project_base_labels | regex_replace('\n\n\n(\n)*', '\n\n', multiline=True) }}"
+    traefik_project_base_labels: "{{ _traefik_project_base_labels | regex_replace('\n\n\n(\n)*', '\n\n', multiline=True) }}"
