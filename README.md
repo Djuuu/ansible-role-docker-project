@@ -48,13 +48,18 @@ docker_projects_path: # /var/apps
 ### Base domain suffixes
 ```yaml
 # Local machine domain
-local_base_domain: localhost
+local_base_domain: internal
 
 # Exposed service domain
 exposed_base_domain: # example.net
 ```
-These domains suffixes are used when configuring subdomain through  
-`{{ docker_project_prefix }}_traefik_subdomain` [dynamic variable](#dynamic-variables).
+These domains suffixes are used to build Traefik default rule in
+[djuuu.traefik_docker](https://github.com/Djuuu/ansible-role-traefik-docker),
+along with optional `{{ docker_project_prefix }}_traefik_subdomain` [dynamic variable](#dynamic-variables). 
+
+See:
+- https://github.com/Djuuu/ansible-role-traefik-docker/blob/main/templates/docker-compose.yml.j2#L56-L60
+- https://doc.traefik.io/traefik/providers/docker/#defaultrule
 
 ### Additional allowed origins
 ```yaml
