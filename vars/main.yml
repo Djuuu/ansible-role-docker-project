@@ -9,6 +9,9 @@ docker_project_prefix: "{{ docker_project_name | regex_replace('[^\\w]', '_') }}
 # Project directory path
 docker_project_path: "{{ docker_projects_path }}/{{ docker_project_slug }}"
 
+# Docker command
+docker_cmd: "{{ docker_cli | default('docker', true) }}"
+
 
 ## Docker project dynamic vars
 

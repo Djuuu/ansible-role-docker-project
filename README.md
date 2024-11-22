@@ -185,6 +185,9 @@ These variables are computed from other variables and can be used in roles:
 docker_cli:
 ```
 
+`docker_cmd` is available for convenience.  
+It uses `docker_cli` if set, or defaults to 'docker'.
+
 Example role implementation
 ---------------------------
 
@@ -224,7 +227,7 @@ Role example:
       src: docker-compose.yml.j2
       dest: "{{ docker_project_path }}/docker-compose.yml"
       mode: '0644'
-      validate: "{{ docker_cli | default('docker', true) }} compose -f %s config"
+      validate: "{{ docker_cmd }} compose -f %s config"
       backup: true
   
   ## Run
