@@ -6,7 +6,7 @@
     traefik_domain_label: ''
     traefik_subdomain_label: ''
     traefik_project_base_host_rules: ''
-    traefik_project_base_labels: ''
+    traefik_project_base_labels: 'traefik.enable: false'
     docker_project_default_network: ''
 
 - name: Setup Docker project Traefik vars
