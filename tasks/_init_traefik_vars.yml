@@ -83,11 +83,11 @@
       {{ _traefik_internal_router_labels }}
       {% endif %}
       {% if docker_project_traefik_custom_labels %}
-      
+
       {{ docker_project_traefik_custom_labels }}
       {% endif %}
       {% if docker_project_slug ~ '-cors@docker' in docker_project_traefik_middlewares %}
-      
+
       traefik.http.middlewares.{{ docker_project_slug }}-cors.headers.accessControlMaxAge: {{ docker_project_access_control_max_age | default(100) }}
       traefik.http.middlewares.{{ docker_project_slug }}-cors.headers.addVaryHeader: true
       traefik.http.middlewares.{{ docker_project_slug }}-cors.headers.accessControlAllowMethods: "{{ docker_project_access_control_allow_methods | default('*') }}"
