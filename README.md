@@ -66,7 +66,7 @@ See:
 docker_project_allowed_origins: []
 #  - https://dashboard.example.net
 ```
-Used in `allow-frames@file` and `{{ docker_project_slug }}-cors@docker` middlewares from
+Used in `csp-frame-ancestors@file` and `{{ docker_project_slug }}-cors@docker` middlewares from
 [djuuu.traefik_docker](https://github.com/Djuuu/ansible-role-traefik-docker) role.
 
 
@@ -272,7 +272,7 @@ hey_there_traefik_loadbalancer_server_port: 1234
 hey_there_traefik_entrypoints: http,https
 hey_there_traefik_middlewares: 
   - "internal-access@file"
-  - "allow-frames@file"
+  - "csp-frame-ancestors@file"
   - "{{ docker_project_slug }}-cors@docker"
     
 hey_there_access_control_max_age:       60
