@@ -185,8 +185,13 @@ These variables are computed from other variables and can be used in roles:
 docker_cli:
 ```
 
-`docker_cmd` is available for convenience.  
+`docker_cmd` computed variable is available for convenience.  
 It uses `docker_cli` if set, or defaults to 'docker'.
+
+```yaml
+pull: false
+```
+Pulls image before starting container in `compose-up` task (intended as extra var).
 
 Example role implementation
 ---------------------------

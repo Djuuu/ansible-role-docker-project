@@ -4,6 +4,7 @@
   community.docker.docker_compose_v2:
     docker_cli:     "{{ docker_cli | default(omit, true) }}"
     project_src:    "{{ docker_project_path }}"
+    pull:           "{{ pull | default(false) | ternary('always', 'policy') }}"
     state:          present
     remove_orphans: true
     wait:           true
