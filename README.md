@@ -91,6 +91,9 @@ Variables constructed from `docker_project_name` value can be used to configure:
   - _`{{ docker_project_prefix }}`_**`_traefik_loadbalancer_server_port`**  
     Port targeted by Traefik router  
 
+  - _`{{ docker_project_prefix }}`_**`_traefik_loadbalancer_server_scheme`** (default: `"http"`)  
+    Scheme targeted by Traefik router  
+
   - _`{{ docker_project_prefix }}`_**`_traefik_entrypoints`** (default: `"https"`)  
     Traefik router entrypoints  
 

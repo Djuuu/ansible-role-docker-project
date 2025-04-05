@@ -73,6 +73,9 @@
       {% if docker_project_traefik_loadbalancer_server_port %}
       traefik.http.services.{{ docker_project_slug }}.loadbalancer.server.port: {{ docker_project_traefik_loadbalancer_server_port }}
       {% endif %}
+      {% if docker_project_traefik_loadbalancer_server_scheme != 'http' %}
+      traefik.http.services.{{ docker_project_slug }}.loadbalancer.server.scheme: {{ docker_project_traefik_loadbalancer_server_scheme }}
+      {% endif %}
       {% if traefik_subdomain_label %}
       {{ traefik_subdomain_label }}
       {% endif %}

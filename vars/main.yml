@@ -27,6 +27,8 @@ docker_project_traefik_subdomain: "{{ lookup('vars', docker_project_prefix ~ '_t
 docker_project_traefik_router_service: "{{ lookup('vars', docker_project_prefix ~ '_traefik_router_service', default='') }}"
 # Port targeted by Traefik router
 docker_project_traefik_loadbalancer_server_port: "{{ lookup('vars', docker_project_prefix ~ '_traefik_loadbalancer_server_port', default='') }}"
+# Scheme targeted by Traefik router
+docker_project_traefik_loadbalancer_server_scheme: "{{ lookup('vars', docker_project_prefix ~ '_traefik_loadbalancer_server_scheme', default='http') }}"
 # Traefik router entrypoints
 docker_project_traefik_entrypoints: "{{ lookup('vars', docker_project_prefix ~ '_traefik_entrypoints', default='') | default('https', true) }}"
 # Traefik router middlewares
