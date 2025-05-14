@@ -9,6 +9,7 @@
     traefik_project_base_labels: 'traefik.enable: false'
     docker_project_service_network_options: ''
     docker_project_default_network: ''
+    docker_project_networks: ''
 
 - name: Setup Docker project Traefik vars
   when: docker_project_traefik_enable
@@ -19,10 +20,10 @@
   ansible.builtin.set_fact:
     docker_project_service_network_options: "network_mode: {{ docker_project_network_mode }}"
 
-- name: Setup Docker project default network
+- name: Setup Docker project networks
   when: docker_project_network_mode == 'bridge'
-  ansible.builtin.set_fact:
-    docker_project_default_network: |-
+  vars:
+    _docker_project_default_network: |-
       #jinja2: trim_blocks: True, lstrip_blocks: True
       default:
         driver: bridge
@@ -40,6 +41,22 @@
         {% if docker_project_compose_ipv6_subnet | default(false) %}
         enable_ipv6: true
         {% endif %}
+  ansible.builtin.set_fact:
+    docker_project_service_network_options: "{{
+        (docker_project_additional_networks | length > 0) | ternary(
+          'networks:\n' ~
+          '  - default\n' ~
+          '  - ' ~ docker_project_additional_networks | join('\n  - '), '')
+      }}"
+    docker_project_default_network: "{{ _docker_project_default_network }}"
+    docker_project_networks: |-
+      #jinja2: trim_blocks: True, lstrip_blocks: True
+      networks:
+        {{ _docker_project_default_network | indent(2) }}
+        {% for item in docker_project_additional_networks %}
+        {{ item }}:
+          external: true
+        {% endfor %}
 
 - name: Debug Docker project vars
   when: not docker_project_traefik_enable
@@ -59,6 +76,8 @@
       - "docker_project_compose_ipv6_subnet ({{ docker_project_prefix }}_compose_ipv6_subnet): {{ docker_project_compose_ipv6_subnet }}"
       - "docker_project_default_network:"
       - "{{ docker_project_default_network.split('\n') | reject('eq', '') }}"
+      - "docker_project_additional_networks ({{ docker_project_prefix }}_additional_networks):"
+      - "{{ docker_project_additional_networks }}"
       - ""
       - "docker_project_compose_additional_options         ({{ docker_project_prefix }}_compose_additional_options):"
       - "{{ docker_project_compose_additional_options.split('\n') | reject('eq', '') }}"
@@ -106,6 +125,8 @@
       - "docker_project_compose_ipv6_subnet ({{ docker_project_prefix }}_compose_ipv6_subnet): {{ docker_project_compose_ipv6_subnet }}"
       - "docker_project_default_network:"
       - "{{ docker_project_default_network.split('\n') | reject('eq', '') }}"
+      - "docker_project_additional_networks ({{ docker_project_prefix }}_additional_networks):"
+      - "{{ docker_project_additional_networks }}"
       - ""
       - "docker_project_compose_additional_options         ({{ docker_project_prefix }}_compose_additional_options):"
       - "{{ docker_project_compose_additional_options.split('\n') | reject('eq', '') }}"

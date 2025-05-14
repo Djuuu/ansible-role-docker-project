@@ -55,6 +55,9 @@ docker_project_network_mode: "{{ lookup('vars', docker_project_prefix ~ '_networ
 docker_project_compose_ipv4_subnet: "{{ lookup('vars', docker_project_prefix ~ '_compose_ipv4_subnet', default='') }}"
 docker_project_compose_ipv6_subnet: "{{ lookup('vars', docker_project_prefix ~ '_compose_ipv6_subnet', default='') }}"
 
+# Additional external docker-compose networks, joined by main service
+docker_project_additional_networks: "{{ lookup('vars', docker_project_prefix ~ '_additional_networks', default=[]) }}"
+
 
 # Top-level additional docker-compose options
 docker_project_compose_additional_options: "{{ lookup('vars', docker_project_prefix ~ '_compose_additional_options', default='') }}"
