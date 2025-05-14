@@ -172,6 +172,12 @@ These variables are computed from other variables and can be used in roles:
   ```yaml  
   network_mode: host # from `docker_project_network_mode` dynamic var
   ```  
+  or:  
+  ```yaml  
+  networks:
+    - default
+    - other # from `docker_project_additional_networks` dynamic var
+  ```  
 
 - **`docker_project_default_network`**  
   Generated default network configuration.  
@@ -266,8 +272,7 @@ Role example:
       labels:
         {{ traefik_project_base_labels | indent(6) }}
 
-  networks:
-    {{ docker_project_default_network | indent(2) }}
+  {{ docker_project_networks }}
 
   {{ docker_project_compose_additional_options }}
   ```
@@ -302,6 +307,9 @@ hey_there_traefik_custom_labels: |-
   other-label: example
 
 hey_there_network_mode: bridge
+
+hey_there_additional_networks:
+  - example_net
   
 hey_there_compose_ipv4_subnet: 172.18.0.0/16
 hey_there_compose_ipv6_subnet: 2001:db8:0001:0001::/64
