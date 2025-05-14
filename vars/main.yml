@@ -47,9 +47,14 @@ docker_project_access_control_allow_headers: "{{ lookup('vars', docker_project_p
 # Additional Traefik labels
 docker_project_traefik_custom_labels: "{{ lookup('vars', docker_project_prefix ~ '_traefik_custom_labels', default='') }}"
 
+
+# Project network mode
+docker_project_network_mode: "{{ lookup('vars', docker_project_prefix ~ '_network_mode', default='bridge') }}"
+
 # Optional default network IP subnets
 docker_project_compose_ipv4_subnet: "{{ lookup('vars', docker_project_prefix ~ '_compose_ipv4_subnet', default='') }}"
 docker_project_compose_ipv6_subnet: "{{ lookup('vars', docker_project_prefix ~ '_compose_ipv6_subnet', default='') }}"
+
 
 # Top-level additional docker-compose options
 docker_project_compose_additional_options: "{{ lookup('vars', docker_project_prefix ~ '_compose_additional_options', default='') }}"

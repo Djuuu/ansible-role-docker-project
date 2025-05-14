@@ -114,8 +114,9 @@ Variables constructed from `docker_project_name` value can be used to configure:
   - _`{{ docker_project_prefix }}`_**`_traefik_custom_labels`**  
     Additional Traefik labels  
 
-* Network subnets
-
+* Network
+  - _`{{ docker_project_prefix }}`_**`_network_mode`** (default: `bridge`)  
+    Network mode (ex: `host`)  
   - _`{{ docker_project_prefix }}`_**`_compose_ipv4_subnet`**  
   - _`{{ docker_project_prefix }}`_**`_compose_ipv6_subnet`**  
     Optional default network IP subnets  
@@ -163,6 +164,13 @@ These variables are computed from other variables and can be used in roles:
   traefik.enable: true  
   net.example.subdomain: hello-world  
   # ...  
+  ```  
+
+- **`docker_project_service_network_options`**  
+  Service `network_mode` or `networks` attributes.  
+  ex:  
+  ```yaml  
+  network_mode: host # from `docker_project_network_mode` dynamic var
   ```  
 
 - **`docker_project_default_network`**  
@@ -251,6 +259,8 @@ Role example:
     hello_world:
       image: hello-world
 
+      {{ docker_project_service_network_options | indent(4) }}
+
       {{ docker_project_compose_service_additional_options | indent(4) }}
 
       labels:
@@ -291,6 +301,8 @@ hey_there_traefik_custom_labels: |-
   hello-label: hey there
   other-label: example
 
+hey_there_network_mode: bridge
+  
 hey_there_compose_ipv4_subnet: 172.18.0.0/16
 hey_there_compose_ipv6_subnet: 2001:db8:0001:0001::/64
 

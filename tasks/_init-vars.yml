@@ -7,13 +7,20 @@
     traefik_subdomain_label: ''
     traefik_project_base_host_rules: ''
     traefik_project_base_labels: 'traefik.enable: false'
+    docker_project_service_network_options: ''
     docker_project_default_network: ''
 
 - name: Setup Docker project Traefik vars
   when: docker_project_traefik_enable
   ansible.builtin.include_tasks: _init_traefik_vars.yml
 
+- name: Setup Docker project service network options
+  when: docker_project_network_mode != 'bridge'
+  ansible.builtin.set_fact:
+    docker_project_service_network_options: "network_mode: {{ docker_project_network_mode }}"
+
 - name: Setup Docker project default network
+  when: docker_project_network_mode == 'bridge'
   ansible.builtin.set_fact:
     docker_project_default_network: |-
       #jinja2: trim_blocks: True, lstrip_blocks: True
@@ -47,6 +54,7 @@
       - ""
       - "docker_project_traefik_enable ({{ docker_project_prefix }}_traefik_enable): {{ docker_project_traefik_enable }}"
       - ""
+      - "docker_project_network_mode        ({{ docker_project_prefix }}_network_mode):        {{ docker_project_network_mode }}"
       - "docker_project_compose_ipv4_subnet ({{ docker_project_prefix }}_compose_ipv4_subnet): {{ docker_project_compose_ipv4_subnet }}"
       - "docker_project_compose_ipv6_subnet ({{ docker_project_prefix }}_compose_ipv6_subnet): {{ docker_project_compose_ipv6_subnet }}"
       - "docker_project_default_network:"
@@ -93,6 +101,7 @@
       - "traefik_project_base_labels:"
       - "{{ traefik_project_base_labels.split('\n') | reject('eq', '') }}"
       - ""
+      - "docker_project_network_mode        ({{ docker_project_prefix }}_network_mode):        {{ docker_project_network_mode }}"
       - "docker_project_compose_ipv4_subnet ({{ docker_project_prefix }}_compose_ipv4_subnet): {{ docker_project_compose_ipv4_subnet }}"
       - "docker_project_compose_ipv6_subnet ({{ docker_project_prefix }}_compose_ipv6_subnet): {{ docker_project_compose_ipv6_subnet }}"
       - "docker_project_default_network:"
