@@ -117,16 +117,16 @@ Variables constructed from `docker_project_name` value can be used to configure:
 * Network
   - _`{{ docker_project_prefix }}`_**`_network_mode`** (default: `bridge`)  
     Network mode (ex: `host`)  
-  - _`{{ docker_project_prefix }}`_**`_compose_ipv4_subnet`**  
-  - _`{{ docker_project_prefix }}`_**`_compose_ipv6_subnet`**  
+  - _`{{ docker_project_prefix }}`_**`_network_ipv4_subnet`**  
+  - _`{{ docker_project_prefix }}`_**`_network_ipv6_subnet`**  
     Optional default network IP subnets  
 
 * Additional docker compose options
 
+  - _`{{ docker_project_prefix }}`_**`_service_additional_options`**  
+    Main service additional docker-compose options (ex: cpu_shares, deploy, ...)
   - _`{{ docker_project_prefix }}`_**`_compose_additional_options`**  
     Top-level additional docker-compose options
-  - _`{{ docker_project_prefix }}`_**`_compose_service_additional_options`**  
-    Main service additional docker-compose options (ex: cpu_shares, deploy, ...)
 
 When set, dynamic variables are set into equivalent variables prefixed with `docker_project_`  
 (ex: `docker_project_traefik_domain`, `docker_project_compose_additional_options`, etc.)
@@ -267,7 +267,7 @@ Role example:
 
       {{ docker_project_service_network_options | indent(4) }}
 
-      {{ docker_project_compose_service_additional_options | indent(4) }}
+      {{ docker_project_service_additional_options | indent(4) }}
 
       labels:
         {{ traefik_project_base_labels | indent(6) }}
@@ -311,10 +311,10 @@ hey_there_network_mode: bridge
 hey_there_additional_networks:
   - example_net
   
-hey_there_compose_ipv4_subnet: 172.18.0.0/16
-hey_there_compose_ipv6_subnet: 2001:db8:0001:0001::/64
+hey_there_network_ipv4_subnet: 172.18.0.0/16
+hey_there_network_ipv6_subnet: 2001:db8:0001:0001::/64
 
-hey_there_compose_service_additional_options: |
+hey_there_service_additional_options: |
   cpu_shares: 10
   deploy:
     resources:
