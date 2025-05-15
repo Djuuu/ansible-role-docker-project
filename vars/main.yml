@@ -52,14 +52,14 @@ docker_project_traefik_custom_labels: "{{ lookup('vars', docker_project_prefix ~
 docker_project_network_mode: "{{ lookup('vars', docker_project_prefix ~ '_network_mode', default='bridge') }}"
 
 # Optional default network IP subnets
-docker_project_compose_ipv4_subnet: "{{ lookup('vars', docker_project_prefix ~ '_compose_ipv4_subnet', default='') }}"
-docker_project_compose_ipv6_subnet: "{{ lookup('vars', docker_project_prefix ~ '_compose_ipv6_subnet', default='') }}"
+docker_project_network_ipv4_subnet: "{{ lookup('vars', docker_project_prefix ~ '_network_ipv4_subnet', default='') }}"
+docker_project_network_ipv6_subnet: "{{ lookup('vars', docker_project_prefix ~ '_network_ipv6_subnet', default='') }}"
 
 # Additional external docker-compose networks, joined by main service
 docker_project_additional_networks: "{{ lookup('vars', docker_project_prefix ~ '_additional_networks', default=[]) }}"
 
 
+# Main service additional docker-compose options (ex: cpu_shares, deploy, ...)
+docker_project_service_additional_options: "{{ lookup('vars', docker_project_prefix ~ '_service_additional_options', default='') }}"
 # Top-level additional docker-compose options
 docker_project_compose_additional_options: "{{ lookup('vars', docker_project_prefix ~ '_compose_additional_options', default='') }}"
-# Main service additional docker-compose options (ex: cpu_shares, deploy, ...)
-docker_project_compose_service_additional_options: "{{ lookup('vars', docker_project_prefix ~ '_compose_service_additional_options', default='') }}"
