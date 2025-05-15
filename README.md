@@ -74,6 +74,9 @@ Used in `csp-add-frame-ancestors@file` and `{{ docker_project_slug }}-cors@docke
 
 Variables constructed from `docker_project_name` value can be used to configure: 
 
+- _`{{ docker_project_prefix }}`_**`_restart`**  
+  Container restart policy (default: `"unless-stopped"`)
+
 * Traefik integration (see [djuuu.traefik_docker](https://github.com/Djuuu/ansible-role-traefik-docker) role)
 
   - _`{{ docker_project_prefix }}`_**`_traefik_enable`**  
@@ -264,7 +267,9 @@ Role example:
 
     hello_world:
       image: hello-world
-
+      container_name: {{ docker_project_slug }}
+      restart: {{ docker_project_restart }}
+  
       {{ docker_project_service_network_options | indent(4) }}
 
       {{ docker_project_service_additional_options | indent(4) }}
