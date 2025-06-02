@@ -128,6 +128,8 @@ Variables constructed from `docker_project_name` value can be used to configure:
 
   - _`{{ docker_project_prefix }}`_**`_service_additional_options`**  
     Main service additional docker-compose options (ex: cpu_shares, deploy, ...)
+  - _`{{ docker_project_prefix }}`_**`_service_additional_labels`**
+    Main service additional docker-compose labels (ex: wud.tag.include, ...)
   - _`{{ docker_project_prefix }}`_**`_compose_additional_options`**  
     Top-level additional docker-compose options
 
@@ -276,6 +278,7 @@ Role example:
 
       labels:
         {{ traefik_project_base_labels | indent(6) }}
+        {{ docker_project_service_additional_labels | indent(6) }}
 
   {{ docker_project_networks }}
 

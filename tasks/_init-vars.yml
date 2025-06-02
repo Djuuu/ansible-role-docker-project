@@ -79,10 +79,12 @@
       - "docker_project_additional_networks ({{ docker_project_prefix }}_additional_networks):"
       - "{{ docker_project_additional_networks }}"
       - ""
-      - "docker_project_compose_additional_options         ({{ docker_project_prefix }}_compose_additional_options):"
-      - "{{ docker_project_compose_additional_options.split('\n') | reject('eq', '') }}"
       - "docker_project_service_additional_options ({{ docker_project_prefix }}_service_additional_options):"
       - "{{ docker_project_service_additional_options.split('\n') | reject('eq', '') }}"
+      - "docker_project_service_additional_labels ({{ docker_project_prefix }}_service_additional_labels):"
+      - "{{ docker_project_service_additional_labels.split('\n') | reject('eq', '') }}"
+      - "docker_project_compose_additional_options ({{ docker_project_prefix }}_compose_additional_options):"
+      - "{{ docker_project_compose_additional_options.split('\n') | reject('eq', '') }}"
 
 - name: Debug Docker project vars
   when: docker_project_traefik_enable
@@ -128,7 +130,9 @@
       - "docker_project_additional_networks ({{ docker_project_prefix }}_additional_networks):"
       - "{{ docker_project_additional_networks }}"
       - ""
-      - "docker_project_compose_additional_options ({{ docker_project_prefix }}_compose_additional_options):"
-      - "{{ docker_project_compose_additional_options.split('\n') | reject('eq', '') }}"
       - "docker_project_service_additional_options ({{ docker_project_prefix }}_service_additional_options):"
       - "{{ docker_project_service_additional_options.split('\n') | reject('eq', '') }}"
+      - "docker_project_service_additional_labels ({{ docker_project_prefix }}_service_additional_labels):"
+      - "{{ docker_project_service_additional_labels.split('\n') | reject('eq', '') }}"
+      - "docker_project_compose_additional_options ({{ docker_project_prefix }}_compose_additional_options):"
+      - "{{ docker_project_compose_additional_options.split('\n') | reject('eq', '') }}"

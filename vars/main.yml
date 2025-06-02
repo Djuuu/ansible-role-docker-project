@@ -64,5 +64,8 @@ docker_project_additional_networks: "{{ lookup('vars', docker_project_prefix ~ '
 
 # Main service additional docker-compose options (ex: cpu_shares, deploy, ...)
 docker_project_service_additional_options: "{{ lookup('vars', docker_project_prefix ~ '_service_additional_options', default='') }}"
+# Main service additional docker-compose labels (ex: wud.tag.include, ...)
+docker_project_service_additional_labels: "{{ lookup('vars', docker_project_prefix ~ '_service_additional_labels', default='') }}"
+
 # Top-level additional docker-compose options
 docker_project_compose_additional_options: "{{ lookup('vars', docker_project_prefix ~ '_compose_additional_options', default='') }}"
