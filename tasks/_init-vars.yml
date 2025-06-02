@@ -6,7 +6,7 @@
     traefik_domain_label: ''
     traefik_subdomain_label: ''
     traefik_project_base_host_rules: ''
-    traefik_project_base_labels: 'traefik.enable: false'
+    traefik_project_base_labels: "traefik.enable: false\n"
     docker_project_service_network_options: ''
     docker_project_default_network: ''
     docker_project_networks: ''

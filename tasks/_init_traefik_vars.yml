@@ -98,5 +98,10 @@
       traefik.http.middlewares.{{ docker_project_slug }}-cors.headers.accesscontrolalloworiginlist: >-
         {{ _allowed_origins | join(', ') }}
       {% endif %}
+
   ansible.builtin.set_fact:
-    traefik_project_base_labels: "{{ _traefik_project_base_labels | regex_replace('\n\n\n(\n)*', '\n\n', multiline=True) }}"
+    # remove duplicate empty lines, end with single empty line
+    traefik_project_base_labels: "{{ _traefik_project_base_labels
+        | regex_replace('\n\n(\n)*', '\n\n', multiline=True)
+        | regex_replace('\n*\\Z', '', multiline=True)
+      }}\n"
