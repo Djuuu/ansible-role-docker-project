@@ -1,16 +1,19 @@
 ---
 
 - name: "Start project containers: {{ docker_project_name }}"
-  community.docker.docker_compose_v2:
-    docker_cli:     "{{ docker_cli | default(omit, true) }}"
-    project_src:    "{{ docker_project_path }}"
-    pull:           "{{ pull | default(false) | ternary('always', 'policy') }}"
-    state:          present
-    remove_orphans: true
-    wait:           true
-  register: up_result
+  tags: ["start"]
+  block:
+    - name: "Start project containers: {{ docker_project_name }}"
+      community.docker.docker_compose_v2:
+        docker_cli:     "{{ docker_cli | default(omit, true) }}"
+        project_src:    "{{ docker_project_path }}"
+        pull:           "{{ pull | default(false) | ternary('always', 'policy') }}"
+        state:          present
+        remove_orphans: true
+        wait:           true
+      register: up_result
 
-- name: "Show project start result: {{ docker_project_name }}"
-  ansible.builtin.debug:
-    msg: "{{ up_result.stderr_lines | default([]) }}"
-  changed_when: up_result.changed
+    - name: "Show project start result: {{ docker_project_name }}"
+      ansible.builtin.debug:
+        msg: "{{ up_result.stderr_lines | default([]) }}"
+      changed_when: up_result.changed
