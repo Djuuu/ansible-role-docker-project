@@ -2,7 +2,7 @@
 
 - name: "Setup Traefik custom domain: {{ docker_project_prefix ~ '_traefik_domain: ' ~ docker_project_traefik_domain }}"
   when:
-    - docker_project_traefik_domain
+    - docker_project_traefik_domain is truthy
   ansible.builtin.set_fact:
     traefik_domains: "{{ [docker_project_traefik_domain] }}"
     traefik_domain_label: "traefik.http.routers.{{ docker_project_slug }}.rule: Host(`{{ docker_project_traefik_domain }}`)"
@@ -11,7 +11,7 @@
   when:
     - not docker_project_traefik_domain
     - traefik_subdomain_label_key is defined
-    - docker_project_traefik_subdomain
+    - docker_project_traefik_subdomain is truthy
   ansible.builtin.set_fact:
     traefik_subdomain_label: "{{ traefik_subdomain_label_key }}: {{ docker_project_traefik_subdomain }}"
 

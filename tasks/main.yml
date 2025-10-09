@@ -5,8 +5,8 @@
 - name: Check base variables
   ansible.builtin.assert:
     that:
-      - docker_project_name is defined and docker_project_name
-      - docker_projects_path is defined and docker_projects_path
+      - docker_project_name is defined and docker_project_name is truthy
+      - docker_projects_path is defined and docker_projects_path is truthy
   tags: ["init", "check"]
 
 - name: "Check base directory is writeable: {{ docker_projects_path }}"
