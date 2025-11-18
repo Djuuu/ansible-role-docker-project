@@ -17,5 +17,5 @@
 
 ## Init
 
-- name: Init Traefik Docker Compose project vars
+- name: Init Docker Compose project vars
   ansible.builtin.include_tasks: _init-vars.yml
