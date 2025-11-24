@@ -19,3 +19,6 @@ docker_project_allowed_origins: []
 # Path to the Docker CLI (Community.Docker modules argument)
 # https://docs.ansible.com/ansible/latest/collections/community/docker/index.html
 docker_cli:
+
+# Path to the Docker Compose CLI (when using legacy docker-compose plugin)
+docker_compose_cli:

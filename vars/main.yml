@@ -12,6 +12,9 @@ docker_project_path: "{{ docker_projects_path }}/{{ docker_project_slug }}"
 # Docker command
 docker_cmd: "{{ docker_cli | default('docker', true) }}"
 
+# Docker compose command
+docker_compose_cmd: "{{ docker_compose_cli | default(docker_cmd ~ ' compose', true) }}"
+
 
 ## Docker project dynamic vars
 

@@ -205,10 +205,16 @@ These variables are computed from other variables and can be used in roles:
 # Path to the Docker CLI (Community.Docker modules argument)
 # https://docs.ansible.com/ansible/latest/collections/community/docker/index.html
 docker_cli:
+
+# Path to the Docker Compose CLI (when using legacy docker-compose plugin)
+docker_compose_cli:
 ```
 
-`docker_cmd` computed variable is available for convenience.  
-It uses `docker_cli` if set, or defaults to 'docker'.
+The following computed variables are available for convenience:
+- `docker_cmd`:  
+  uses `docker_cli` if set, or defaults to 'docker'
+- `docker_compose_cmd`:  
+  uses `docker_compose_cli` if set, or defaults to `{{ docker_cmd }} compose`
 
 ```yaml
 pull: false
@@ -254,7 +260,7 @@ Role example:
       src: docker-compose.yml.j2
       dest: "{{ docker_project_path }}/docker-compose.yml"
       mode: '0644'
-      validate: "{{ docker_cmd }} compose -f %s config"
+      validate: "{{ docker_compose_cmd }} -f %s config"
       backup: true
   
   ## Run
