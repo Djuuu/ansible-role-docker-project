@@ -15,7 +15,7 @@ docker_cmd: "{{ docker_cli | default('docker', true) }}"
 
 ## Docker project dynamic vars
 
-# Should Traefik expose service?
+# Service restart policy
 docker_project_restart: "{{ lookup('vars', docker_project_prefix ~ '_restart', default='unless-stopped') }}"
 
 # Should Traefik expose service?
