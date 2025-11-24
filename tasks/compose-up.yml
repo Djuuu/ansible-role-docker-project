@@ -4,6 +4,7 @@
   tags: ["start"]
   block:
     - name: "Start project containers: {{ docker_project_name }}"
+      when: docker_compose_cli is not truthy
       community.docker.docker_compose_v2:
         docker_cli:     "{{ docker_cli | default(omit, true) }}"
         project_src:    "{{ docker_project_path }}"
@@ -12,6 +13,15 @@
         remove_orphans: true
         wait:           true
       register: up_result
+
+    - name: "Start project containers (legacy): {{ docker_project_name }}"
+      when: docker_compose_cli is truthy
+      ansible.builtin.command: "{{ docker_compose_cli }} up --quiet-pull -d"
+      args:
+        chdir: "{{ docker_project_path }}"
+      register: up_result
+      changed_when: up_result.stderr_lines | select('match', '.* Starting') | length > 0
+
 
     - name: "Show project start result: {{ docker_project_name }}"
       ansible.builtin.debug:

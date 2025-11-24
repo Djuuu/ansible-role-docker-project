@@ -1,12 +1,22 @@
 ---
 
 - name: "Restart project containers: {{ docker_project_name }}"
+  when: docker_compose_cli is not truthy
   community.docker.docker_compose_v2:
     docker_cli:  "{{ docker_cli | default(omit, true) }}"
     project_src: "{{ docker_project_path }}"
     state:       restarted
     wait:        true
   register: restart_result
+
+- name: "Restart project containers (legacy): {{ docker_project_name }}"
+  when: docker_compose_cli is truthy
+  ansible.builtin.command: "{{ docker_compose_cli }} restart"
+  args:
+    chdir: "{{ docker_project_path }}"
+  register: restart_result
+  changed_when: true
+
 
 - name: "Show project restart result: {{ docker_project_name }}"
   ansible.builtin.debug:
