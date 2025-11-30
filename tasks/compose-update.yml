@@ -1,30 +1,79 @@
 ---
 
-- name: "Update project images: {{ docker_project_name }}"
-  community.docker.docker_compose_v2_pull:
-    docker_cli:  "{{ docker_cli | default(omit, true) }}"
-    project_src: "{{ docker_project_path }}"
-  register: output
-  when: not project_restart
-
-- name: "Update project services: {{ docker_project_name }}"
-  when: project_restart
+- name: "Update project: {{ docker_project_name }}"
+  when: docker_compose_cli is falsy
   block:
 
-    - name: "Update project services: {{ docker_project_name }}"
-      community.docker.docker_compose_v2:
-        docker_cli:     "{{ docker_cli | default(omit, true) }}"
-        project_src:    "{{ docker_project_path }}"
-        pull:           always
-        state:          present
-        remove_orphans: true
-        wait:           "{{ project_restart }}"
+    - name: "Update project images: {{ docker_project_name }}"
+      community.docker.docker_compose_v2_pull:
+        docker_cli:  "{{ docker_cli | default(omit, true) }}"
+        project_src: "{{ docker_project_path }}"
       register: output
+      when: not project_restart
 
-    - name: "Show project update status: {{ docker_project_name }}"
-      ansible.builtin.debug:
-        msg: "{{ output.stderr_lines | default([]) }}"
-      changed_when: output.changed
+    - name: "Update project services: {{ docker_project_name }}"
+      when: project_restart
+      block:
 
-    - name: "Show status: {{ docker_project_name }}"
-      ansible.builtin.include_tasks: compose-ps.yml
+        - name: "Update project services: {{ docker_project_name }}"
+          community.docker.docker_compose_v2:
+            docker_cli:     "{{ docker_cli | default(omit, true) }}"
+            project_src:    "{{ docker_project_path }}"
+            pull:           always
+            state:          present
+            remove_orphans: true
+            wait:           "{{ project_restart }}"
+          register: output
+
+        - name: "Show project update status: {{ docker_project_name }}"
+          ansible.builtin.debug:
+            msg: "{{ output.stderr_lines | default([]) }}"
+          changed_when: output.changed
+
+        - name: "Show status: {{ docker_project_name }}"
+          ansible.builtin.include_tasks: compose-ps.yml
+
+
+
+- name: "Update project (legacy): {{ docker_project_name }}"
+  when: docker_compose_cli is truthy
+  vars:
+    pull_match_lines: '.* (Pulling|Pulled|No image to be pulled)\s*$'
+  block:
+
+    - name: "Pull project images: {{ docker_project_name }}"
+      # when: not project_restart
+      block:
+        - name: "Pull project images: {{ docker_project_name }}"
+          ansible.builtin.command: "{{ docker_compose_cmd }} pull"
+          args:
+            chdir: "{{ docker_project_path }}"
+          register: docker_compose_pull_result
+          changed_when: |
+            (docker_compose_pull_result.stderr_lines | length) >
+            (docker_compose_pull_result.stderr_lines | select('match', pull_match_lines) | length)
+          ignore_errors: true
+
+        - name: "Show project pull result: {{ docker_project_name }}"
+          ansible.builtin.debug:
+            msg: "{{ docker_compose_pull_result.stderr_lines | select('match', pull_match_lines) }}"
+          changed_when: docker_compose_pull_result.changed
+
+    - name: "Update project services: {{ docker_project_name }}"
+      when: project_restart
+      block:
+        - name: "Start project containers: {{ docker_project_name }}"
+          ansible.builtin.command: "{{ docker_compose_cmd }} up --quiet-pull -d"
+          args:
+            chdir: "{{ docker_project_path }}"
+          register: up_result
+          changed_when: up_result.stderr_lines | select('match', '.* Starting') | length > 0
+          ignore_errors: true
+
+        - name: "Show project start result: {{ docker_project_name }}"
+          ansible.builtin.debug:
+            msg: "{{ up_result.stderr_lines }}"
+          changed_when: up_result.changed
+
+        - name: "Show project status: {{ docker_project_name }}"
+          ansible.builtin.include_tasks: compose-ps.yml
