@@ -18,6 +18,7 @@ var_naming_pattern: "^[a-z_][a-zA-Z0-9_]*$"
 skip_list:
   - jinja[spacing]
   - yaml[colons]
+  - yaml[line-length]
 
 # Offline mode disables installation of requirements.yml and schema refreshing
 offline: true

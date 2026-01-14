@@ -34,7 +34,6 @@
           ansible.builtin.include_tasks: compose-ps.yml
 
 
-
 - name: "Update project (legacy): {{ docker_project_name }}"
   when: docker_compose_cli is truthy
   vars:
