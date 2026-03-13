@@ -5,13 +5,14 @@
   community.docker.docker_compose_v2:
     docker_cli:  "{{ docker_cli | default(omit, true) }}"
     project_src: "{{ docker_project_path }}"
+    services:    "{{ docker_restart_service | default(omit, true) }}"
     state:       restarted
     wait:        true
   register: restart_result
 
 - name: "Restart project containers (legacy): {{ docker_project_name }}"
   when: docker_compose_cli is truthy
-  ansible.builtin.command: "{{ docker_compose_cli }} restart"
+  ansible.builtin.command: "{{ docker_compose_cli }} restart {{ docker_restart_service | default('') }}"
   args:
     chdir: "{{ docker_project_path }}"
   register: restart_result
