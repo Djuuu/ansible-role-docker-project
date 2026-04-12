@@ -10,7 +10,7 @@
 - name: "Setup Traefik custom subdomain: {{ docker_project_prefix ~ '_traefik_subdomain: ' ~ docker_project_traefik_subdomain }}"
   when:
     - not docker_project_traefik_domain
-    - traefik_subdomain_label_key is defined
+    - traefik_subdomain_label_key is defined # djuuu.traefik_docker var
     - docker_project_traefik_subdomain is truthy
   ansible.builtin.set_fact:
     traefik_subdomain_label: "{{ traefik_subdomain_label_key }}: {{ docker_project_traefik_subdomain }}"
