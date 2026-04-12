@@ -1,7 +1,9 @@
 ---
 
 - name: "Update project: {{ docker_project_name }}"
-  when: docker_compose_cli is falsy
+  when: docker_compose_cli is not truthy
+  vars:
+    restart: "{{ docker_project_restart is truthy and docker_project_restart != 'no' }}"
   block:
 
     - name: "Update project images: {{ docker_project_name }}"
@@ -9,10 +11,10 @@
         docker_cli:  "{{ docker_cli | default(omit, true) }}"
         project_src: "{{ docker_project_path }}"
       register: output
-      when: not project_restart
+      when: not restart
 
     - name: "Update project services: {{ docker_project_name }}"
-      when: project_restart
+      when: restart
       block:
 
         - name: "Update project services: {{ docker_project_name }}"
@@ -22,7 +24,7 @@
             pull:           always
             state:          present
             remove_orphans: true
-            wait:           "{{ project_restart }}"
+            wait:           "{{ restart }}"
           register: output
 
         - name: "Show project update status: {{ docker_project_name }}"
@@ -37,11 +39,11 @@
 - name: "Update project (legacy): {{ docker_project_name }}"
   when: docker_compose_cli is truthy
   vars:
+    restart: "{{ docker_project_restart is truthy and docker_project_restart != 'no' }}"
     pull_match_lines: '.* (Pulling|Pulled|No image to be pulled)\s*$'
   block:
 
     - name: "Pull project images: {{ docker_project_name }}"
-      # when: not project_restart
       block:
         - name: "Pull project images: {{ docker_project_name }}"
           ansible.builtin.command: "{{ docker_compose_cmd }} pull"
@@ -59,7 +61,7 @@
           changed_when: docker_compose_pull_result.changed
 
     - name: "Update project services: {{ docker_project_name }}"
-      when: project_restart
+      when: restart
       block:
         - name: "Start project containers: {{ docker_project_name }}"
           ansible.builtin.command: "{{ docker_compose_cmd }} up --quiet-pull -d"

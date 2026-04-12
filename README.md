@@ -398,7 +398,7 @@ However, there are some available tasks that can be used independently:
         tasks_from: compose-update
       vars:
         docker_project_name: "{{ item.name | default(item) }}"
-        project_restart: "{{ item.restart | default(true) }}"
+        docker_project_restart: "{{ item.restart | default(true) }}"
       loop: "{{ docker_projects | default([]) }}"
 
     - name: Docker system prune
