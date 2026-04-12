@@ -16,7 +16,7 @@
 
     - name: "Start project containers (legacy): {{ docker_project_name }}"
       when: docker_compose_cli is truthy
-      ansible.builtin.command: "{{ docker_compose_cli }} up --quiet-pull -d"
+      ansible.builtin.command: "{{ docker_compose_cmd }} up --quiet-pull -d"
       args:
         chdir: "{{ docker_project_path }}"
       register: up_result

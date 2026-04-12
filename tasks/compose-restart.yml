@@ -12,7 +12,7 @@
 
 - name: "Restart project containers (legacy): {{ docker_project_name }}"
   when: docker_compose_cli is truthy
-  ansible.builtin.command: "{{ docker_compose_cli }} restart {{ docker_restart_service | default('') }}"
+  ansible.builtin.command: "{{ docker_compose_cmd }} restart {{ docker_restart_service | default('') }}"
   args:
     chdir: "{{ docker_project_path }}"
   register: restart_result
