@@ -345,7 +345,8 @@ hey_there_compose_additional_options: |
 Dependencies
 ------------
 
-None.
+Collections:
+- `community.docker` (for the `docker_compose_v2` and `docker_compose_v2_pull` modules)
 
 Some variables allow integration with:
 - [djuuu.traefik_docker](https://github.com/Djuuu/ansible-role-traefik-docker)
