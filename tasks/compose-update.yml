@@ -10,7 +10,7 @@
       community.docker.docker_compose_v2_pull:
         docker_cli:  "{{ docker_cli | default(omit, true) }}"
         project_src: "{{ docker_project_path }}"
-      register: output
+      register: pull_output
       when: not restart
 
     - name: "Update project services: {{ docker_project_name }}"
@@ -49,16 +49,16 @@
           ansible.builtin.command: "{{ docker_compose_cmd }} pull"
           args:
             chdir: "{{ docker_project_path }}"
-          register: docker_compose_pull_result
+          register: legacy_pull_output
           changed_when: |
-            (docker_compose_pull_result.stderr_lines | length) >
-            (docker_compose_pull_result.stderr_lines | select('match', pull_match_lines) | length)
+            (legacy_pull_output.stderr_lines | length) >
+            (legacy_pull_output.stderr_lines | select('match', pull_match_lines) | length)
           ignore_errors: true
 
         - name: "Show project pull result: {{ docker_project_name }}"
           ansible.builtin.debug:
-            msg: "{{ docker_compose_pull_result.stderr_lines | select('match', pull_match_lines) }}"
-          changed_when: docker_compose_pull_result.changed
+            msg: "{{ legacy_pull_output.stderr_lines | select('match', pull_match_lines) }}"
+          changed_when: legacy_pull_output.changed
 
     - name: "Update project services: {{ docker_project_name }}"
       when: restart
@@ -67,14 +67,24 @@
           ansible.builtin.command: "{{ docker_compose_cmd }} up --quiet-pull -d"
           args:
             chdir: "{{ docker_project_path }}"
-          register: up_result
-          changed_when: up_result.stderr_lines | select('match', '.* Starting') | length > 0
+          register: legacy_output
+          changed_when: legacy_output.stderr_lines | select('match', '.* Starting') | length > 0
           ignore_errors: true
 
         - name: "Show project start result: {{ docker_project_name }}"
           ansible.builtin.debug:
-            msg: "{{ up_result.stderr_lines }}"
-          changed_when: up_result.changed
+            msg: "{{ legacy_output.stderr_lines }}"
+          changed_when: legacy_output.changed
 
         - name: "Show project status: {{ docker_project_name }}"
           ansible.builtin.include_tasks: compose-ps.yml
+
+
+- name: "Register updated project: {{ docker_project_name }}"
+  ansible.builtin.set_fact:
+    docker_projects_updated: "{{ docker_projects_updated | default([]) + [docker_project_name] }}"
+  when: >-
+    pull_output | default({}) is changed
+    or output | default({}) is changed
+    or legacy_pull_output | default({}) is changed
+    or legacy_output | default({}) is changed

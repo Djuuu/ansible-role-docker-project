@@ -406,6 +406,13 @@ However, there are some available tasks that can be used independently:
       ansible.builtin.include_role:
         name: djuuu.docker_project
         tasks_from: system-prune
+
+    - name: Show updated projects
+      ansible.builtin.debug:
+        msg:
+          'Updated projects': "{{ docker_projects_updated }}"
+      changed_when: true
+      when: docker_projects_updated is defined
 ```
 
 **`compose-up`**
