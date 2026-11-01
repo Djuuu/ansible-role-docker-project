@@ -397,6 +397,9 @@ However, there are some available tasks that can be used independently:
       ansible.builtin.include_role:
         name: djuuu.docker_project
         tasks_from: compose-update
+        apply:
+          tags: [update]
+      tags: [update]
       vars:
         docker_project_name: "{{ item.name | default(item) }}"
         docker_project_restart: "{{ item.restart | default(true) }}"
@@ -406,12 +409,16 @@ However, there are some available tasks that can be used independently:
       ansible.builtin.include_role:
         name: djuuu.docker_project
         tasks_from: system-prune
+        apply:
+          tags: [prune]
+      tags: [prune]
 
     - name: Show updated projects
       ansible.builtin.debug:
         msg:
           'Updated projects': "{{ docker_projects_updated }}"
       changed_when: true
+      tags: [update]
       when: docker_projects_updated is defined
 ```
 
